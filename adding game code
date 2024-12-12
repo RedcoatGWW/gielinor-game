@@ -1,0 +1,489 @@
+# Gilienor: Elvargs Wrath
+
+
+import os, time, keyboard, random
+
+#Dictionaries
+#These are my dictionaries that contain values of the assets of the game
+
+valubles = [
+    {"name": "Gold", "value": 1},
+    {"name": "Ruby", "value": 100},
+    {"name": "Sapphire", "value": 300},
+    {"name": "Diamond", "value": 1000},
+    {"name": "Bones", "value": 1},
+]
+
+monsters = [
+    {"name": "Goblin", "health": 5, "attack": 1, "mon_id": 1},
+    {"name": "Cow", "health": 1, "attack": 1, "mon_id": 2},
+    {"name": "Chicken", "health": 1, "attack": 1, "mon_id": 3},
+    {"name": "Guard", "health": 20, "attack": 10, "mon_id": 4},
+    {"name": "Unicorn", "health": 10, "attack": 5, "mon_id": 1},
+    {"name": "Poison Spider", "health": 30, "attack": 5, "mon_id": 1},
+    {"name": "Barbarian", "health": 20, "attack": 5, "mon_id": 1},
+]
+
+boss = [
+    {"name": "Elvarg", "health": 50, "attack": 20},
+]
+
+traps = [
+    {"name": "Pitfall", "damage": 1},
+    {"name": "Log Bridge", "damage": 3},
+    {"name": "Poison Beer", "damage": 10},
+    {"name": "Dart trap", "damage": 1},
+    {"name": "Axe Swing", "damage": 3},
+    {"name": "Ambush", "damage": 5},
+    {"name": "Lava Pit", "damage": 15},
+]
+
+health_items = [
+    {"name": "Shrimp", "healing": 5},
+    {"name": "Cooked Beef", "healing": 5},
+    {"name": "Roast Chicken", "healing": 5},
+    {"name": "Beer", "healing": 15},
+    {"name": "Health Potion", "healing": 40},
+]
+
+magic = [
+    {"name": "Dodge", "def_buff": 5},
+    {"name": "Infuse Weapon", "att_buff": 5},
+    {"name": "Fireball", "att_buff": 20},
+    {"name": "Infuse Armour", "def_buff": 10},
+    {"name": "Healing Magic", "healing": 40},
+]
+
+player_1 = {"Health": 100, "Gold": 50, "Items": [], "Magic": []}
+player_2 = {"Health": 100, "Gold": 50, "Items": [], "Magic": []}
+
+Lumbridge = [
+    [ 0 , 3 , 0 , 1 , 2 , 0],
+    [ 0 , 1 , 2 , 0 , 0 , 2],
+    [ 1 , 0 , 0 , 1 , 0 , 0],
+    [ 0 , 2 , 1 , 0 , 1 , 0],
+    [ 0 , 1 , 0 , 2 , 0 , 0],
+    
+]
+
+Varrock = [
+    [ 0 , 0 , 0 , 0 , 0 , 0],
+    [ 0 , 0 , 0 , 0 , 0 , 0],
+    [ 0 , 0 , 0 , 0 , 0 , 0],
+    [ 0 , 0 , 0 , 0 , 0 , 0],
+    [ 0 , 0 , 0 , 0 , 0 , 0],
+    [ 0 , 0 , 0 , 0 , 0 , 0],
+    [ 0 , 0 , 0 , 0 , 0 , 0],
+    [ 0 , 0 , 0 , 0 , 0 , 0],
+    
+]
+
+Dungeon = [
+    [ 0 , 0 , 0 , 0 , 0 , 0],
+    [ 0 , 0 , 0 , 0 , 0 , 0],
+    [ 0 , 0 , 0 , 0 , 0 , 0],
+    [ 0 , 0 , 0 , 0 , 0 , 0],
+    [ 0 , 0 , 0 , 0 , 0 , 0],
+    [ 0 , 0 , 0 , 0 , 0 , 0],
+    [ 0 , 0 , 0 , 0 , 0 , 4],    
+]
+
+player_1_lumbridge_visit = 0
+player_1_varrok_visit = 0
+player_1_dungeon_visit = 0
+player_1_totalgold = 0
+player_1_monsters_killed = 0
+player_1_traps_triggered = 0
+player_1_dragon_killed = 0
+
+player_2_lumbridge_visit = 0
+player_2_varrok_visit = 0
+player_2_dungeon_visit = 0
+player_2_totalgold = 0
+player_2_monsters_killed = 0
+player_2_traps_triggered = 0
+player_2_dragon_killed = 0
+
+def main():
+    while True:
+        os.system("cls")
+        print("Welcome to the Gileanor: Elvargs Wrath\n")
+        print("1. New Game")
+        print("2. New Game 2 Players")
+        print("3. Load Game")
+        print("4. Exit")
+        
+        game_op = input("Select an option: ")
+        
+        if game_op == "2":
+            print("Player 2 has entered the realm")
+            time.sleep(2)
+            os.system("cls")
+            continue
+        
+        if game_op == "4":
+            print("are you sure you want to exit?")
+            exit_op = input("y/n: ")
+            if exit_op == "y":
+                exit()
+            else:
+                continue
+        
+        if game_op == "1":
+            print("Welcome to the realm of Gileanor")
+            print("The quiet town of Lumbridge stirs with dread. Smoke rises on the horizon, and rumors speak of the fearsome dragon Elvarg is hidden deep within a forgotten dungeon.")
+            print("With nothing but courage and a resolve to prove your worth, you set out from tutorial island to Lumbridge. Your quest begins here. Will you rise to the challenge and slay Elvarg, or fall to the trials ahead?")
+            print("\n")
+            time.sleep(4)
+            os.system("cls")
+            return_lumbridge()
+            
+            
+def return_shop():
+    while True:
+        print("Welcome to My shop! What can i get you?")
+        print("1. Buy food")
+        print("2. Buy magic scrolls")
+        print("3. Leave shop")
+        
+        shop_op = input("Select an option: ")
+        
+        if shop_op == "1":
+            print("1. Shrimp - 5 gold")
+            print("2. Cooked Beef - 5 gold")
+            print("3. Roast Chicken - 5 gold")
+            print("4. Beer - 15 gold")
+            print("5. Health Potion - 40 gold")
+            print("6. Leave shop")
+            
+            shop_food_op = input("Select an option: ")
+            
+            if player_2:
+                player = player_2
+            else:
+                player = player_1
+            
+            if shop_food_op == "1":
+                if player["Gold"] >= 5:
+                    player["Gold"] -= 5
+                    player["Items"].append("Shrimp")
+                    print("You have bought some Shrimp")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                else:
+                    print("You do not have enough gold")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                
+            if shop_food_op == "2":
+                if player["Gold"] >= 5:
+                    player["Gold"] -= 5
+                    player["Items"].append("Cooked Beef")
+                    print("You have bought some Cooked Beef")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                else:
+                    print("You do not have enough gold")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                
+            if shop_food_op == "3":
+                if player["Gold"] >= 5:
+                    player["Gold"] -= 5
+                    player["Items"].append("Roast Chicken")
+                    print("You have bought some Roast Chicken")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                else:
+                    print("You do not have enough gold")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                
+            if shop_food_op == "4":
+                if player["Gold"] >= 15:
+                    player["Gold"] -= 15
+                    player["Items"].append("Beer")
+                    print("You have bought a Beer")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                else:
+                    print("You do not have enough gold")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                
+            if shop_food_op == "5":
+                if player["Gold"] >= 40:
+                    player["Gold"] -= 40
+                    player["Items"].append("Health Potion")
+                    print("You have bought a Health Potion")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                else:
+                    print("You do not have enough gold")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+            if shop_food_op == "6":
+                print("You open the door and leave the shop")
+                return movement()
+        
+        if shop_op == "2":
+            print("1. Dodge - 5 gold")
+            print("2. Infuse Weapon - 5 gold")
+            print("3. Fireball - 20 gold")
+            print("4. Infuse Armour - 10 gold")
+            print("5. Healing Magic - 40 gold")
+            print("6. Leave shop")
+            
+            shop_magic_op = input("Select an option: ")
+            
+            if player_2:
+                player = player_2
+            else:
+                player = player_1
+            
+            if shop_magic_op == "1":
+                if player["Gold"] >= 5:
+                    player["Gold"] -= 5
+                    player["Magic"].append("Dodge")
+                    print("You have bought the Dodge scroll")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                else:
+                    print("You do not have enough gold")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                
+            if shop_magic_op == "2":
+                if player["Gold"] >= 5:
+                    player["Gold"] -= 5
+                    player["Magic"].append("Infuse Weapon")
+                    print("You have bought the Infuse Weapon scroll")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                else:
+                    print("You do not have enough gold")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                
+            if shop_magic_op == "3":
+                if player["Gold"] >= 20:
+                    player["Gold"] -= 20
+                    player["Magic"].append("Fireball")
+                    print("You have bought the Fireball scroll")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                else:
+                    print("You do not have enough gold")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                
+            if shop_magic_op == "4":
+                if player["Gold"] >= 10:
+                    player["Gold"] -= 10
+                    player["Magic"].append("Infuse Armour")
+                    print("You have bought the Infuse Armour scroll")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                else:
+                    print("You do not have enough gold")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                
+            if shop_magic_op == "5":
+                if player["Gold"] >= 40:
+                    player["Gold"] -= 40
+                    player["Magic"].append("Healing Magic")
+                    print("You have bought the Healing Magic scroll")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                else:
+                    print("You do not have enough gold")
+                    time.sleep(2)
+                    os.system("cls")
+                    continue
+                
+            if shop_magic_op == "6":
+                print("You open the door and leave the shop")
+                return movement()
+            time.sleep(2)
+            os.system("cls")
+            
+        if shop_op == "3":
+            print("You open the door and leave the shop")
+            return movement()
+
+        time.sleep(2)
+        os.system("cls")
+
+def return_lumbridge():
+    print("Welcome to Lumbridge! You have just arrived of the boat from tutorial island. As soon as your boot reaches the earth below a man approches you.\n")
+    time.sleep(2)
+    print(" Duke Horacio: 'Welcome stranger, I am Duke Horacio, the ruler of Lumbridge. I understand you havent been here long but i need your help.'\n")
+    time.sleep(2)
+    print(" Duke Horacio: 'I need you to go to the dungeon and slay the dragon before he can cause any more harm to the realm.'\n")
+    time.sleep(2)
+    print(" Duke Horacio: 'I will reward you with riches and glory for your bravery.'\n")
+    time.sleep(2)
+    print("Duke Horacio: 'Will you help us in our time of need?' \n")
+
+    quest_start = input("Yes or No: ")
+    if quest_start == "Yes":
+        print("Thank you brave adventurer. You will find the dungeon to the north of the town. Good luck!")
+        time.sleep(2)
+        os.system("cls")
+        return movement()
+    else:
+        print("Oh. I see. Thats awkward. Ill see you later then. okay. bye. *cough*")
+        return main()
+
+def return_lum():
+    global player_1_lumbridge_visit, player_2_lumbridge_visit, player_1_totalgold, player_2_totalgold, player_1_monsters_killed, player_2_monsters_killed, player_1_traps_triggered, player_2_traps_triggered, player_1_dragon_killed, player_2_dragon_killed
+
+    if player_2:
+        player = player_2
+    else:
+        player = player_1
+        
+def search_varrock(lumbridge, varrock):
+    l_start = 0
+    l_end = len(lumbridge) - 1
+    
+    while l_start <= l_end:
+        l_mid = l_start + (l_end - l_start) // 2
+        
+        if l_mid == varrock:
+            return l_mid
+        
+        elif varrock < l_mid:
+            l_end = l_mid - 1
+            
+        else:
+            l_start = l_mid + 1
+    return None
+
+# Set initial player position and current map
+current_map = "Lumbridge"
+player_position = [0, 0]  # Starting at Lumbridge[0][0]
+
+# Map dictionary for easy reference
+maps = {"Lumbridge": Lumbridge, "Varrock": Varrock}
+
+# Display the current map
+def display_map():
+    print(f"You are in {current_map}.")
+    for row_index, row in enumerate(maps[current_map]):
+        for col_index, cell in enumerate(row):
+            if [row_index, col_index] == player_position:
+                print("P", end=" ")  # Player position
+            elif cell == 3:
+                print("S", end=" ")
+            elif cell == 1:
+                print("T", end=" ")
+            elif cell == 2:
+                print("M", end=" ")
+            else:
+                print(".", end=" ") if cell == 0 else print("X", end=" ")  # 0 for empty, X for other objects
+        print()
+    print()
+
+# Move player within the current map
+def move_player(direction):
+    row, col = player_position
+    if direction == "w" and row > 0:  # Move up
+        player_position[0] -= 1
+    elif direction == "s" and row < len(maps[current_map]) - 1:  # Move down
+        player_position[0] += 1
+    elif direction == "a" and col > 0:  # Move left
+        player_position[1] -= 1
+    elif direction == "d" and col < len(maps[current_map][0]) - 1:  # Move right
+        player_position[1] += 1
+    else:
+        print("You can't move in that direction!")
+    
+    # Handle map transitions (e.g., reaching the edge or special spots)
+    handle_map_transition()
+
+# Handle transitions between maps
+def handle_map_transition():
+    global current_map, player_position
+    if current_map == "Lumbridge" and player_position == [4, 5]:  # Example condition to switch maps
+        print("You have discovered the road to Varrock!")
+        current_map = "Varrock"
+        player_position = [0, 0]  # Example: Start Varrock at the top-left corner
+    elif current_map == "Varrock" and player_position == [6, 5]:
+        print("You have Found the entrance of the dungeon!")
+        current_map = "Dungeon"
+        player_position = [0, 0]
+    elif current_map == "Lumbridge" and player_position == [0, 1]:
+        print("You have discovered the shop in lumbridge!")
+        return return_shop()
+        
+
+# Main game loop
+def movement():
+    print("Use 'W', 'A', 'S', 'D' to move and 'Q' to quit.")
+    while True:
+        display_map()
+        move = input("Move: ").lower()
+        if move == "q":
+            print("Thanks for playing!")
+            break
+        elif move in ["w", "a", "s", "d"]:
+            move_player(move)
+            os.system("cls")
+        else:
+            print("Invalid input. Use 'W', 'A', 'S', 'D' to move.")
+
+# Run the game
+if __name__ == "__main__":
+    main()
+
+
+# Run the game
+
+    
+    
+    
+    
+# def search_varrock(lumbridge, varrock):
+#     l_start = 0
+#     l_end = len(lumbridge) - 1
+    
+#     while l_start <= l_end:
+#         l_mid = l_start + (l_end - l_start) // 2
+        
+#         if lumbridge[l_mid] == varrock:
+#             return l_mid
+        
+#         elif varrock < lumbridge[l_mid]:
+#             l_end = l_mid - 1
+            
+#         else:
+#             l_start = l_mid + 1
+#     return None
+
+# varrock = 1
+
+# print(search_varrock(Lumbridge, varrock))
+
+if __name__ == "__main__":
+    main()
