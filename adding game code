@@ -19,9 +19,9 @@ monsters = [
     {"name": "Cow", "health": 1, "attack": 1, "mon_id": 2},
     {"name": "Chicken", "health": 1, "attack": 1, "mon_id": 3},
     {"name": "Guard", "health": 20, "attack": 10, "mon_id": 4},
-    {"name": "Unicorn", "health": 10, "attack": 5, "mon_id": 1},
-    {"name": "Poison Spider", "health": 30, "attack": 5, "mon_id": 1},
-    {"name": "Barbarian", "health": 20, "attack": 5, "mon_id": 1},
+    {"name": "Unicorn", "health": 10, "attack": 5, "mon_id": 5},
+    {"name": "Poison Spider", "health": 30, "attack": 5, "mon_id": 6},
+    {"name": "Barbarian", "health": 20, "attack": 5, "mon_id": 7},
 ]
 
 boss = [
@@ -54,8 +54,8 @@ magic = [
     {"name": "Healing Magic", "healing": 40},
 ]
 
-player_1 = {"Health": 100, "Gold": 50, "Items": [], "Magic": []}
-player_2 = {"Health": 100, "Gold": 50, "Items": [], "Magic": []}
+player_1 = {"Health": 100, "Gold": 50, "health_items": [], "Magic": []}
+player_2 = {"Health": 100, "Gold": 50, "health_items": [], "Magic": []}
 
 Lumbridge = [
     [ 0 , 3 , 0 , 1 , 2 , 0],
@@ -166,7 +166,7 @@ def return_shop():
             if shop_food_op == "1":
                 if player["Gold"] >= 5:
                     player["Gold"] -= 5
-                    player["Items"].append("Shrimp")
+                    player["health_items"].append("Shrimp")
                     print("You have bought some Shrimp")
                     time.sleep(2)
                     os.system("cls")
@@ -180,7 +180,7 @@ def return_shop():
             if shop_food_op == "2":
                 if player["Gold"] >= 5:
                     player["Gold"] -= 5
-                    player["Items"].append("Cooked Beef")
+                    player["health_items"].append("Cooked Beef")
                     print("You have bought some Cooked Beef")
                     time.sleep(2)
                     os.system("cls")
@@ -194,7 +194,7 @@ def return_shop():
             if shop_food_op == "3":
                 if player["Gold"] >= 5:
                     player["Gold"] -= 5
-                    player["Items"].append("Roast Chicken")
+                    player["health_items"].append("Roast Chicken")
                     print("You have bought some Roast Chicken")
                     time.sleep(2)
                     os.system("cls")
@@ -208,7 +208,7 @@ def return_shop():
             if shop_food_op == "4":
                 if player["Gold"] >= 15:
                     player["Gold"] -= 15
-                    player["Items"].append("Beer")
+                    player["health_items"].append("Beer")
                     print("You have bought a Beer")
                     time.sleep(2)
                     os.system("cls")
@@ -222,7 +222,7 @@ def return_shop():
             if shop_food_op == "5":
                 if player["Gold"] >= 40:
                     player["Gold"] -= 40
-                    player["Items"].append("Health Potion")
+                    player["health_items"].append("Health Potion")
                     print("You have bought a Health Potion")
                     time.sleep(2)
                     os.system("cls")
@@ -234,6 +234,7 @@ def return_shop():
                     continue
             if shop_food_op == "6":
                 print("You open the door and leave the shop")
+                os.system("cls")
                 return movement()
         
         if shop_op == "2":
@@ -385,7 +386,7 @@ current_map = "Lumbridge"
 player_position = [0, 0]  # Starting at Lumbridge[0][0]
 
 # Map dictionary for easy reference
-maps = {"Lumbridge": Lumbridge, "Varrock": Varrock}
+maps = {"Lumbridge": Lumbridge, "Varrock": Varrock , "Dungeon": Dungeon}
 
 # Display the current map
 def display_map():
@@ -440,7 +441,7 @@ def handle_map_transition():
 
 # Main game loop
 def movement():
-    print("Use 'W', 'A', 'S', 'D' to move and 'Q' to quit.")
+    print("Use 'W', 'A', 'S', 'D' to move and 'stats' to see your player statistics.")
     while True:
         display_map()
         move = input("Move: ").lower()
@@ -450,6 +451,16 @@ def movement():
         elif move in ["w", "a", "s", "d"]:
             move_player(move)
             os.system("cls")
+        elif move == "stats":
+            if player_2:
+                player = player_2
+            else:
+                player = player_1
+            print("Player Stats:")
+            print(f"Health: {player['Health']}")
+            print(f"Gold: {player['Gold']}")
+            print(f"Items: {player['health_items']}")
+            print(f"Magic: {player['Magic']}")
         else:
             print("Invalid input. Use 'W', 'A', 'S', 'D' to move.")
 
@@ -484,6 +495,3 @@ if __name__ == "__main__":
 # varrock = 1
 
 # print(search_varrock(Lumbridge, varrock))
-
-if __name__ == "__main__":
-    main()
