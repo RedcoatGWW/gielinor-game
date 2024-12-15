@@ -65,31 +65,14 @@ Lumbridge = [
     [ 0 , 1 , 0 , 2 , 0 , 0],
     
 ]
-
-Varrock = [
-    [ 0 , 0 , 0 , 0 , 0 , 0],
-    [ 0 , 0 , 0 , 0 , 0 , 0],
-    [ 0 , 0 , 0 , 0 , 0 , 0],
-    [ 0 , 0 , 0 , 0 , 0 , 0],
-    [ 0 , 0 , 0 , 0 , 0 , 0],
-    [ 0 , 0 , 0 , 0 , 0 , 0],
-    [ 0 , 0 , 0 , 0 , 0 , 0],
-    [ 0 , 0 , 0 , 0 , 0 , 0],
-    
-]
-
 Dungeon = [
-    [ 0 , 0 , 0 , 0 , 0 , 0],
-    [ 0 , 0 , 0 , 0 , 0 , 0],
-    [ 0 , 0 , 0 , 0 , 0 , 0],
-    [ 0 , 0 , 0 , 0 , 0 , 0],
-    [ 0 , 0 , 0 , 0 , 0 , 0],
-    [ 0 , 0 , 0 , 0 , 0 , 0],
-    [ 0 , 0 , 0 , 0 , 0 , 4],    
+    [ 0 , 0 , 0 , 0],
+    [ 0 , 0 , 0 , 0],
+    [ 0 , 0 , 0 , 0],
+    [ 0 , 0 , 0 , 4],    
 ]
 
 player_1_lumbridge_visit = 0
-player_1_varrok_visit = 0
 player_1_dungeon_visit = 0
 player_1_totalgold = 0
 player_1_monsters_killed = 0
@@ -97,7 +80,6 @@ player_1_traps_triggered = 0
 player_1_dragon_killed = 0
 
 player_2_lumbridge_visit = 0
-player_2_varrok_visit = 0
 player_2_dungeon_visit = 0
 player_2_totalgold = 0
 player_2_monsters_killed = 0
@@ -334,7 +316,7 @@ def return_shop():
 
         time.sleep(2)
         os.system("cls")
-
+#This is the function that returns the player to lumbridge after the player has started the game
 def return_lumbridge():
     print("Welcome to Lumbridge! You have just arrived of the boat from tutorial island. As soon as your boot reaches the earth below a man approches you.\n")
     time.sleep(2)
@@ -355,7 +337,7 @@ def return_lumbridge():
     else:
         print("Oh. I see. Thats awkward. Ill see you later then. okay. bye. *cough*")
         return main()
-
+#This is the key that holds the player statistics
 def return_lum():
     global player_1_lumbridge_visit, player_2_lumbridge_visit, player_1_totalgold, player_2_totalgold, player_1_monsters_killed, player_2_monsters_killed, player_1_traps_triggered, player_2_traps_triggered, player_1_dragon_killed, player_2_dragon_killed
 
@@ -363,30 +345,12 @@ def return_lum():
         player = player_2
     else:
         player = player_1
-        
-def search_varrock(lumbridge, varrock):
-    l_start = 0
-    l_end = len(lumbridge) - 1
-    
-    while l_start <= l_end:
-        l_mid = l_start + (l_end - l_start) // 2
-        
-        if l_mid == varrock:
-            return l_mid
-        
-        elif varrock < l_mid:
-            l_end = l_mid - 1
-            
-        else:
-            l_start = l_mid + 1
-    return None
-
 # Set initial player position and current map
 current_map = "Lumbridge"
 player_position = [0, 0]  # Starting at Lumbridge[0][0]
 
 # Map dictionary for easy reference
-maps = {"Lumbridge": Lumbridge, "Varrock": Varrock , "Dungeon": Dungeon}
+maps = {"Lumbridge": Lumbridge , "Dungeon": Dungeon}
 
 # Display the current map
 def display_map():
@@ -401,6 +365,8 @@ def display_map():
                 print("T", end=" ")
             elif cell == 2:
                 print("M", end=" ")
+            elif cell == 4:
+                print("D", end=" ")
             else:
                 print(".", end=" ") if cell == 0 else print("X", end=" ")  # 0 for empty, X for other objects
         print()
@@ -419,26 +385,25 @@ def move_player(direction):
         player_position[1] += 1
     else:
         print("You can't move in that direction!")
-    
-    # Handle map transitions (e.g., reaching the edge or special spots)
-    handle_map_transition()
-
+    # Ches formap transitions
+    map_transition()
+    # Check for traps
+    trap_enc()
+    # Check for monster encounters
+    monster_enc()
+    # Check for boss encounter
+    boss_enc()
 # Handle transitions between maps
-def handle_map_transition():
+def map_transition():
     global current_map, player_position
-    if current_map == "Lumbridge" and player_position == [4, 5]:  # Example condition to switch maps
-        print("You have discovered the road to Varrock!")
-        current_map = "Varrock"
-        player_position = [0, 0]  # Example: Start Varrock at the top-left corner
-    elif current_map == "Varrock" and player_position == [6, 5]:
+    if current_map == "Lumbridge" and player_position == [4, 5]: 
         print("You have Found the entrance of the dungeon!")
         current_map = "Dungeon"
         player_position = [0, 0]
+        
     elif current_map == "Lumbridge" and player_position == [0, 1]:
         print("You have discovered the shop in lumbridge!")
         return return_shop()
-        
-
 # Main game loop
 def movement():
     print("Use 'W', 'A', 'S', 'D' to move and 'stats' to see your player statistics.")
@@ -463,35 +428,238 @@ def movement():
             print(f"Magic: {player['Magic']}")
         else:
             print("Invalid input. Use 'W', 'A', 'S', 'D' to move.")
+            
+def monster_enc():
+    global player_position, player_1_monsters_killed, player_2_monsters_killed
+    row, col = player_position
+    current_cell = maps[current_map][row][col]
+    
+    if current_cell == 2:  # Monster marker
+        monster = random.choice(monsters)
+        print(f"A wild {monster['name']} appears! It has {monster['health']} health and {monster['attack']} attack.\n")
+        
+        if player_2:
+            player = player_2
+        else:
+            player = player_1
+        
+        while monster["health"] > 0 and player["Health"] > 0:
+            action = input("Do you want to (A)ttack (R)un (U)se item (C)ast magic? \n").lower()
+            if action == "a":
+                damage = random.randint(5, 15)  # Example player attack damage
+                monster["health"] -= damage
+                print(f"You dealt {damage} damage to the {monster['name']}. It has {monster['health']} health left.\n")
+                
+                if monster["health"] > 0:
+                    player["Health"] -= monster["attack"]
+                    print(f"The {monster['name']} attacks you for {monster['attack']} damage. Your health is now {player['Health']}.\n")
+                    
+                    if player["Health"] <= 0:
+                        print("You have been defeated by the monster!")
+                        exit()
+            elif action == "r":
+                print("You successfully ran away!")
+                return movement()
+            elif action == "u":
+                use_item()
+            elif action == "c":
+                use_magic()
+            else:
+                print("Invalid action. Please choose (A)ttack or (R)un.")
+        
+        if monster["health"] <= 0:
+            print(f"You have defeated the {monster['name']}!")
+            if player_2:
+                player_2_monsters_killed += 1
+            else:
+                player_1_monsters_killed += 1
+        time.sleep(4)
+        os.system("cls")
+        
+    def use_item(player):
+        print("Choose an item to use:")
+        for index, item in enumerate(player["health_items"]):
+            print(f"{index + 1}. {item}")
+        item_choice = int(input("Select an item number: ")) - 1
+        if 0 <= item_choice < len(player["health_items"]):
+            item_name = player["health_items"][item_choice]
+            for item in health_items:
+                if item["name"] == item_name:
+                    player["Health"] += item["healing"]
+                    print(f"You used {item_name} and healed for {item['healing']} health. Your current health is {player['Health']}.")
+                    player["health_items"].pop(item_choice)
+                    break
+        else:
+            print("Invalid choice.")
+
+    def use_magic(player):
+        print("Choose a magic spell to use:")
+        for index, spell in enumerate(player["Magic"]):
+            print(f"{index + 1}. {spell}")
+        spell_choice = int(input("Select a spell number: ")) - 1
+        if 0 <= spell_choice < len(player["Magic"]):
+            spell_name = player["Magic"][spell_choice]
+            for spell in magic:
+                if spell["name"] == spell_name:
+                    if "healing" in spell:
+                        player["Health"] += spell["healing"]
+                        print(f"You used {spell_name} and healed for {spell['healing']} health. Your current health is {player['Health']}.")
+                    elif "att_buff" in spell:
+                        print(f"You used {spell_name} and increased your attack power.")
+                    elif "def_buff" in spell:
+                        print(f"You used {spell_name} and increased your defense.")
+                    player["Magic"].pop(spell_choice)
+                    break
+        else:
+            print("Invalid choice.")
+
+    def monster_enc():
+        global player_position, player_1_monsters_killed, player_2_monsters_killed
+        row, col = player_position
+        current_cell = maps[current_map][row][col]
+        
+        if current_cell == 2:  # Monster marker
+            monster = random.choice(monsters)
+            print(f"A wild {monster['name']} appears! It has {monster['health']} health and {monster['attack']} attack.")
+            
+            if player_2:
+                player = player_2
+            else:
+                player = player_1
+            
+            while monster["health"] > 0 and player["Health"] > 0:
+                action = input("Do you want to (A)ttack, (R)un, (U)se item, or (C)ast magic? ").lower()
+                if action == "a":
+                    damage = random.randint(5, 15)  # Example player attack damage
+                    monster["health"] -= damage
+                    print(f"You dealt {damage} damage to the {monster['name']}. It has {monster['health']} health left.")
+                    
+                    if monster["health"] > 0:
+                        player["Health"] -= monster["attack"]
+                        print(f"The {monster['name']} attacks you for {monster['attack']} damage. Your health is now {player['Health']}.")
+                        
+                        if player["Health"] <= 0:
+                            print("You have been defeated by the monster!")
+                            exit()
+                elif action == "r":
+                    print("You successfully ran away!")
+                    return movement()
+                elif action == "u":
+                    use_item(player)
+                elif action == "c":
+                    use_magic(player)
+                else:
+                    print("Invalid action. Please choose (A)ttack, (R)un, (U)se item, or (C)ast magic.")
+            
+            if monster["health"] <= 0:
+                print(f"You have defeated the {monster['name']}!")
+                if player_2:
+                    player_2_monsters_killed += 1
+                else:
+                    player_1_monsters_killed += 1
+            time.sleep(4)
+            os.system("cls")
+
+def trap_enc():
+    global player_position, player_1_traps_triggered, player_2_traps_triggered
+    row, col = player_position
+    current_cell = maps[current_map][row][col]
+    
+    if current_cell == 1:  # Trap marker
+        trap = random.choice(traps)
+        damage = trap["damage"]
+        print(f"You have triggered a trap: {trap['name']}! It deals {damage} damage.")
+        
+        if player_2:
+            player = player_2
+            player_2_traps_triggered += 1
+        else:
+            player = player_1
+            player_1_traps_triggered += 1
+        
+        player["Health"] -= damage
+        if player["Health"] <= 0:
+            print("You have died from the trap!")
+            exit()
+        else:
+            print(f"Your current health is {player['Health']}.")
+        time.sleep(2)
+        os.system("cls")
+        
+def boss_enc():
+    global player_position, player_1_dragon_killed, player_2_dragon_killed
+    row, col = player_position
+    current_cell = maps[current_map][row][col]
+    
+    if current_cell == 4:  # Boss marker
+        elvarg = boss[0]  # Assuming boss[0] is Elvarg
+        print(f"A wild {elvarg['name']} appears! It has {elvarg['health']} health and {elvarg['attack']} attack.")
+        
+        if player_2:
+            player = player_2
+        else:
+            player = player_1
+        
+        while elvarg["health"] > 0 and player["Health"] > 0:
+            action = input("Do you want to (A)ttack or (R)un? ").lower()
+            if action == "a":
+                damage = random.randint(5, 15)  # Example player attack damage
+                elvarg["health"] -= damage
+                print(f"You dealt {damage} damage to the {elvarg['name']}. It has {elvarg['health']} health left.")
+                
+                if elvarg["health"] > 0:
+                    player["Health"] -= elvarg["attack"]
+                    print(f"The {elvarg['name']} attacks you for {elvarg['attack']} damage. Your health is now {player['Health']}.")
+                    
+                    if player["Health"] <= 0:
+                        print("You have been defeated by Elvarg!")
+                        exit()
+            elif action == "r":
+                print("You successfully ran away!")
+                return movement()
+            else:
+                print("Invalid action. Please choose (A)ttack or (R)un.")
+        
+        if elvarg["health"] <= 0:
+            print(f"You have defeated the {elvarg['name']}!")
+            if player_2:
+                player_2_dragon_killed += 1
+            else:
+                player_1_dragon_killed += 1
+        time.sleep(4)
+        os.system("cls")
+    
+
+
+# def search_dungeon():
+#     global player_position
+#     row, col = player_position
+    
+#     # Perform binary search on the dungeon map
+#     def search_dungeon(dungeon, target):
+#         for row in dungeon:
+#             low, high = 0, len(row) - 1
+#             while low <= high:
+#                 mid = (low + high) // 2
+#                 if row[mid] == target:
+#                     return True
+#                 elif row[mid] < target:
+#                     low = mid + 1
+#                 else:
+#                     high = mid - 1
+#         return False
+
+#     return search_dungeon(Dungeon, "Elvarg")  # "Elvarg" is the boss marker
+
+# # Check for Elvarg in the dungeon
+# if search_dungeon():
+#     if player_2:
+#         boss_encounter(player_2)
+#     else:
+#         boss_encounter(player_1)
+# else:
+#     print("Elvarg not found in the dungeon.")
 
 # Run the game
 if __name__ == "__main__":
     main()
-
-
-# Run the game
-
-    
-    
-    
-    
-# def search_varrock(lumbridge, varrock):
-#     l_start = 0
-#     l_end = len(lumbridge) - 1
-    
-#     while l_start <= l_end:
-#         l_mid = l_start + (l_end - l_start) // 2
-        
-#         if lumbridge[l_mid] == varrock:
-#             return l_mid
-        
-#         elif varrock < lumbridge[l_mid]:
-#             l_end = l_mid - 1
-            
-#         else:
-#             l_start = l_mid + 1
-#     return None
-
-# varrock = 1
-
-# print(search_varrock(Lumbridge, varrock))
