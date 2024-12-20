@@ -1,10 +1,8 @@
 # Gilienor: Elvargs Wrath
 
-
-import os, time, keyboard, random
-
 #Dictionaries
 #These are my dictionaries that contain values of the assets of the game
+import os, time, keyboard, random
 
 valubles = [
     {"name": "Gold", "value": 1},
@@ -66,12 +64,13 @@ Lumbridge = [
     
 ]
 Dungeon = [
-    [ 0 , 0 , 0 , 0],
-    [ 0 , 0 , 0 , 0],
-    [ 0 , 0 , 0 , 0],
-    [ 0 , 0 , 0 , 4],    
+    [ 0 , 5 , 1 , 0],
+    [ 5 , 0 , 0 , 5],
+    [ 0 , 5 , 1 , 0],
+    [ 5 , 0 , 0 , 4],    
 ]
 
+# Global variable for statistic tracking
 player_1_lumbridge_visit = 0
 player_1_dungeon_visit = 0
 player_1_totalgold = 0
@@ -86,6 +85,45 @@ player_2_monsters_killed = 0
 player_2_traps_triggered = 0
 player_2_dragon_killed = 0
 
+player = player_1
+
+def use_item(player):
+    print("Choose an item to use:")
+    for index, item in enumerate(player["health_items"]):
+        print(f"{index + 1}. {item}")
+    item_choice = int(input("Select an item number: ")) - 1
+    if 0 <= item_choice < len(player["health_items"]):
+        item_name = player["health_items"][item_choice]
+        for item in health_items:
+            if item["name"] == item_name:
+                player["Health"] += item["healing"]
+                print(f"You used {item_name} and healed for {item['healing']} health. Your current health is {player['Health']}.")
+                player["health_items"].pop(item_choice)
+                break
+    else:
+        print("Invalid choice.")
+
+def use_magic(player):
+    print("Choose a magic spell to use:")
+    for index, spell in enumerate(player["Magic"]):
+        print(f"{index + 1}. {spell}")
+    spell_choice = int(input("Select a spell number: ")) - 1
+    if 0 <= spell_choice < len(player["Magic"]):
+        spell_name = player["Magic"][spell_choice]
+        for spell in magic:
+            if spell["name"] == spell_name:
+                if "healing" in spell:
+                    player["Health"] += spell["healing"]
+                    print(f"You used {spell_name} and healed for {spell['healing']} health. Your current health is {player['Health']}.")
+                elif "att_buff" in spell:
+                    print(f"You used {spell_name} and increased your attack power.")
+                elif "def_buff" in spell:
+                    print(f"You used {spell_name} and increased your defense.")
+                player["Magic"].pop(spell_choice)
+                break
+    else:
+        print("Invalid choice.")
+            
 def main():
     while True:
         os.system("cls")
@@ -101,7 +139,7 @@ def main():
             print("Player 2 has entered the realm")
             time.sleep(2)
             os.system("cls")
-            continue
+            return_lumbridge()
         
         if game_op == "4":
             print("are you sure you want to exit?")
@@ -329,14 +367,17 @@ def return_lumbridge():
     print("Duke Horacio: 'Will you help us in our time of need?' \n")
 
     quest_start = input("Yes or No: ")
-    if quest_start == "Yes":
+    if quest_start == "yes".lower():
         print("Thank you brave adventurer. You will find the dungeon to the north of the town. Good luck!")
         time.sleep(2)
         os.system("cls")
         return movement()
-    else:
+    elif quest_start == "no".lower():
         print("Oh. I see. Thats awkward. Ill see you later then. okay. bye. *cough*")
         return main()
+    else:
+        print("Are you okay? I dont understand what you are saying. Please try again.")
+        return return_lumbridge()
 #This is the key that holds the player statistics
 def return_lum():
     global player_1_lumbridge_visit, player_2_lumbridge_visit, player_1_totalgold, player_2_totalgold, player_1_monsters_killed, player_2_monsters_killed, player_1_traps_triggered, player_2_traps_triggered, player_1_dragon_killed, player_2_dragon_killed
@@ -352,21 +393,23 @@ player_position = [0, 0]  # Starting at Lumbridge[0][0]
 # Map dictionary for easy reference
 maps = {"Lumbridge": Lumbridge , "Dungeon": Dungeon}
 
-# Display the current map
+# Display the current map and hides the markers of traps, monsters, and bosses behind '?'
 def display_map():
-    print(f"You are in {current_map}.")
+    print(f" You are in {current_map}.")
+    player = player_1
+    print(f"Your stats - Health: {player['Health']} | Healing tems: {player['health_items']} | Gold: {player['Gold']} | Magic Scrolls: {player['Magic']}")
     for row_index, row in enumerate(maps[current_map]):
         for col_index, cell in enumerate(row):
             if [row_index, col_index] == player_position:
-                print("P", end=" ")  # Player position
+                print("P", end=" ")  # Player marker
             elif cell == 3:
-                print("S", end=" ")
+                print("S", end=" ") # Shop marker
             elif cell == 1:
-                print("T", end=" ")
+                print("?", end=" ") # Trap marker
             elif cell == 2:
-                print("M", end=" ")
+                print("?", end=" ") # Monster marker
             elif cell == 4:
-                print("D", end=" ")
+                print("?", end=" ") # Boss marker
             else:
                 print(".", end=" ") if cell == 0 else print("X", end=" ")  # 0 for empty, X for other objects
         print()
@@ -406,7 +449,6 @@ def map_transition():
         return return_shop()
 # Main game loop
 def movement():
-    print("Use 'W', 'A', 'S', 'D' to move and 'stats' to see your player statistics.")
     while True:
         display_map()
         move = input("Move: ").lower()
@@ -416,16 +458,6 @@ def movement():
         elif move in ["w", "a", "s", "d"]:
             move_player(move)
             os.system("cls")
-        elif move == "stats":
-            if player_2:
-                player = player_2
-            else:
-                player = player_1
-            print("Player Stats:")
-            print(f"Health: {player['Health']}")
-            print(f"Gold: {player['Gold']}")
-            print(f"Items: {player['health_items']}")
-            print(f"Magic: {player['Magic']}")
         else:
             print("Invalid input. Use 'W', 'A', 'S', 'D' to move.")
             
@@ -446,7 +478,7 @@ def monster_enc():
         while monster["health"] > 0 and player["Health"] > 0:
             action = input("Do you want to (A)ttack (R)un (U)se item (C)ast magic? \n").lower()
             if action == "a":
-                damage = random.randint(5, 15)  # Example player attack damage
+                damage = random.randint(5, 15)  
                 monster["health"] -= damage
                 print(f"You dealt {damage} damage to the {monster['name']}. It has {monster['health']} health left.\n")
                 
@@ -465,7 +497,7 @@ def monster_enc():
             elif action == "c":
                 use_magic()
             else:
-                print("Invalid action. Please choose (A)ttack or (R)un.")
+                print("Invalid action. Please choose (A)ttack, (R)un, (U)se item or (C)ast magic.")
         
         if monster["health"] <= 0:
             print(f"You have defeated the {monster['name']}!")
@@ -475,43 +507,6 @@ def monster_enc():
                 player_1_monsters_killed += 1
         time.sleep(4)
         os.system("cls")
-        
-    def use_item(player):
-        print("Choose an item to use:")
-        for index, item in enumerate(player["health_items"]):
-            print(f"{index + 1}. {item}")
-        item_choice = int(input("Select an item number: ")) - 1
-        if 0 <= item_choice < len(player["health_items"]):
-            item_name = player["health_items"][item_choice]
-            for item in health_items:
-                if item["name"] == item_name:
-                    player["Health"] += item["healing"]
-                    print(f"You used {item_name} and healed for {item['healing']} health. Your current health is {player['Health']}.")
-                    player["health_items"].pop(item_choice)
-                    break
-        else:
-            print("Invalid choice.")
-
-    def use_magic(player):
-        print("Choose a magic spell to use:")
-        for index, spell in enumerate(player["Magic"]):
-            print(f"{index + 1}. {spell}")
-        spell_choice = int(input("Select a spell number: ")) - 1
-        if 0 <= spell_choice < len(player["Magic"]):
-            spell_name = player["Magic"][spell_choice]
-            for spell in magic:
-                if spell["name"] == spell_name:
-                    if "healing" in spell:
-                        player["Health"] += spell["healing"]
-                        print(f"You used {spell_name} and healed for {spell['healing']} health. Your current health is {player['Health']}.")
-                    elif "att_buff" in spell:
-                        print(f"You used {spell_name} and increased your attack power.")
-                    elif "def_buff" in spell:
-                        print(f"You used {spell_name} and increased your defense.")
-                    player["Magic"].pop(spell_choice)
-                    break
-        else:
-            print("Invalid choice.")
 
     def monster_enc():
         global player_position, player_1_monsters_killed, player_2_monsters_killed
@@ -592,7 +587,7 @@ def boss_enc():
     current_cell = maps[current_map][row][col]
     
     if current_cell == 4:  # Boss marker
-        elvarg = boss[0]  # Assuming boss[0] is Elvarg
+        elvarg = boss[0]
         print(f"A wild {elvarg['name']} appears! It has {elvarg['health']} health and {elvarg['attack']} attack.")
         
         if player_2:
@@ -601,9 +596,9 @@ def boss_enc():
             player = player_1
         
         while elvarg["health"] > 0 and player["Health"] > 0:
-            action = input("Do you want to (A)ttack or (R)un? ").lower()
+            action = input("Do you want to (A)ttack (U)se item (C)ast magic? ").lower()
             if action == "a":
-                damage = random.randint(5, 15)  # Example player attack damage
+                damage = random.randint(5, 15)
                 elvarg["health"] -= damage
                 print(f"You dealt {damage} damage to the {elvarg['name']}. It has {elvarg['health']} health left.")
                 
@@ -614,51 +609,44 @@ def boss_enc():
                     if player["Health"] <= 0:
                         print("You have been defeated by Elvarg!")
                         exit()
-            elif action == "r":
-                print("You successfully ran away!")
-                return movement()
             else:
-                print("Invalid action. Please choose (A)ttack or (R)un.")
+                print("Invalid action. Please choose (A)ttack, (U)se item or (C)ast magic.")
         
         if elvarg["health"] <= 0:
             print(f"You have defeated the {elvarg['name']}!")
+            print("You have completed the quest! Congratulations!")
+            print("Return to the main menu? (Y/N)")
+            input("Y/N: ")
+            if input == "Y":
+                return main()
+            else:
+                exit()
+                
             if player_2:
                 player_2_dragon_killed += 1
             else:
                 player_1_dragon_killed += 1
         time.sleep(4)
         os.system("cls")
-    
 
+def search_treasure(dungeon, target):
+    for row in dungeon:
+        low, high = 0, len(row) - 1
+        while low <= high:
+            mid = (low + high) // 2
+            if row[mid] == target:
+                return True
+            elif row[mid] < target:
+                low = mid + 1
+            else:
+                high = mid - 1
+    return False
 
-# def search_dungeon():
-#     global player_position
-#     row, col = player_position
-    
-#     # Perform binary search on the dungeon map
-#     def search_dungeon(dungeon, target):
-#         for row in dungeon:
-#             low, high = 0, len(row) - 1
-#             while low <= high:
-#                 mid = (low + high) // 2
-#                 if row[mid] == target:
-#                     return True
-#                 elif row[mid] < target:
-#                     low = mid + 1
-#                 else:
-#                     high = mid - 1
-#         return False
-
-#     return search_dungeon(Dungeon, "Elvarg")  # "Elvarg" is the boss marker
-
-# # Check for Elvarg in the dungeon
-# if search_dungeon():
-#     if player_2:
-#         boss_encounter(player_2)
-#     else:
-#         boss_encounter(player_1)
-# else:
-#     print("Elvarg not found in the dungeon.")
+# Check for treasure in the dungeon
+if search_treasure(Dungeon, 5):  # Assuming 3 is the treasure marker
+    print("You have found a treasure in the dungeon!")
+else:
+    print("No treasure found in the dungeon.")
 
 # Run the game
 if __name__ == "__main__":
