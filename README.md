@@ -41,10 +41,12 @@ I wasnt entirely sure how to create a 2 player session. I had implamented multip
 # Pseudocode/flowchart
 
 ## Flowchart
+Here is the flowchart for my game.
 
+<img src="GGFlow.png" alt="VSC" width="500"/>
 
 ## Pseudocode
-
+The game is controlled by using W,A,S,D to move around the map, W for up, A for left, S for down and D for right. When the player land on a trap or a monster, the list is randomised and then the controls for combat are, A for attack, R to leave the encounter, U to use an item within the players invetory or C to cast magic also within the players inventory. If the players health reaches zero then the game returns the player back to the start. The winning condition is if the bosses health reaches zero and the player is similarly returned to the start with +1 to their completion statistics.  
 
 # Test Evidence
 
