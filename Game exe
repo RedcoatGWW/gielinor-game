@@ -397,7 +397,7 @@ maps = {"Lumbridge": Lumbridge , "Dungeon": Dungeon}
 def display_map():
     print(f" You are in {current_map}.")
     player = player_1
-    print(f"Your stats - Health: {player['Health']} | Healing tems: {player['health_items']} | Gold: {player['Gold']} | Magic Scrolls: {player['Magic']}")
+    print(f"Your stats - Health: {player['Health']} | Healing items: {player['health_items']} | Gold: {player['Gold']} | Magic Scrolls: {player['Magic']}")
     for row_index, row in enumerate(maps[current_map]):
         for col_index, cell in enumerate(row):
             if [row_index, col_index] == player_position:
