@@ -19,15 +19,19 @@ During combat, the game goes into a turn based mode where the players and monste
 # Challenges and Solutions
 
 ## Binary Search
+With my binary search, i have had issues implamenting it into my game. I have tried various ways to incorporate it however I wasnt able to get it to find an outcome where the outcome is either a selection (Inventory) or map interaction. This was due to the format of the map grid itself and how all of the other entities react with it such as traps, monsters and locations. In this case i have reverted to a simplified randomiser for the map and list functions for the inventory.
 
 ## Timeframe
+My lack of understanding for algorithms caused a very large setback in my project. A lot of my time has been spent in trial and error with not much of a breakthrough. I have therefore stuck with what i understand and attempted to make the game enjoyable whilst also demonstrating the skills i understand whilst also pushing myself.
 
 ## Simplicity
+I wanted the game to be easy to pick up and understand so i kept the instructions on how to play in every instance whilst the game is running. This was due to an earlier itteration of the game, some of the controls seemed uncommon and may confuse the player (such as the (c)ast magic button). This was countered with the options printed as the game was played.
 
 ## Variety
+For my encounters i wanted this to be the random side of my game to simulate wandering around a wilderness where ambushes were the big threat. For this i created my list of monsters that varied in difficulty based on their health and damage. This was easy enough to implament and really gave some depth to the encounters.
 
 ## 2 player
-
+I wasnt entirely sure how to create a 2 player session. I had implamented multiple stages during the game where it would check if a second player was present, however, it wouldnt run properly and would further skip any interaction with the player. I think with time and understanding i would be able to implament it properly and maybe making the game technically simpler it would be easier to understand.
 
 # Search Algorithms
 
@@ -37,6 +41,7 @@ During combat, the game goes into a turn based mode where the players and monste
 # Pseudocode/flowchart
 
 ## Flowchart
+
 
 ## Pseudocode
 
@@ -51,3 +56,5 @@ During combat, the game goes into a turn based mode where the players and monste
 
 
 # Conclusions
+
+This project has been very difficult to grasp for me, however i feel the techniques that i have implamented have been executed well to give the experience intended. I am happy that the game can play from start to finish with minor errors, if any. However, i am still confused with algorithms and how to implement them in a project like this successfully. In the future i need to spend more time understanding binary search 
