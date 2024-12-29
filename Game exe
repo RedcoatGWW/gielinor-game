@@ -642,8 +642,8 @@ def search_treasure(dungeon, target):
                 high = mid - 1
     return False
 
-# Check for treasure in the dungeon
-if search_treasure(Dungeon, 5):  # Assuming 3 is the treasure marker
+# This checks for treasure in the dungeon
+if search_treasure(Dungeon, 5):  
     print("You have found a treasure in the dungeon!")
 else:
     print("No treasure found in the dungeon.")
