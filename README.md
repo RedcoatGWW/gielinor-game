@@ -35,7 +35,7 @@ I wasnt entirely sure how to create a 2 player session. I had implamented multip
 
 # Search Algorithms
 
-## Content
+### Content
 
 
 # Pseudocode/flowchart

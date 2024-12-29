@@ -486,6 +486,7 @@ def monster_enc():
                     player["Health"] -= monster["attack"]
                     print(f"The {monster['name']} attacks you for {monster['attack']} damage. Your health is now {player['Health']}.\n")
                     
+                    
                     if player["Health"] <= 0:
                         print("You have been defeated by the monster!")
                         exit()
@@ -617,11 +618,14 @@ def boss_enc():
             print("You have completed the quest! Congratulations!")
             print("Return to the main menu? (Y/N)")
             input("Y/N: ")
-            if input == "Y":
+            if input == "y".lower():
+                time.sleep(2)
+                os.system("cls")
                 return main()
             else:
                 exit()
-                
+
+            # This track the players completion
             if player_2:
                 player_2_dragon_killed += 1
             else:
@@ -629,6 +633,7 @@ def boss_enc():
         time.sleep(4)
         os.system("cls")
 
+target = 5  # Corresponds to a cell value in the Dungeon map
 def search_treasure(dungeon, target):
     for row in dungeon:
         low, high = 0, len(row) - 1
