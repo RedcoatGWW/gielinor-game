@@ -633,7 +633,7 @@ def boss_enc():
         time.sleep(4)
         os.system("cls")
 
-target = 5  # Corresponds to a cell value in the Dungeon map
+target = 5 
 def search_treasure(dungeon, target):
     for row in dungeon:
         low, high = 0, len(row) - 1
