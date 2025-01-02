@@ -158,7 +158,7 @@ def main():
             os.system("cls")
             return_lumbridge()
             
-            
+#This function contains the shops menu that the players can buy items from
 def return_shop():
     while True:
         print("Welcome to My shop! What can i get you?")
@@ -185,8 +185,8 @@ def return_shop():
             
             if shop_food_op == "1":
                 if player["Gold"] >= 5:
-                    player["Gold"] -= 5
-                    player["health_items"].append("Shrimp")
+                    player["Gold"] -= 5 #This checks to see if the player has enough gold to buy the item
+                    player["health_items"].append("Shrimp") #This returns the item to the players inventory
                     print("You have bought some Shrimp")
                     time.sleep(2)
                     os.system("cls")
@@ -354,7 +354,7 @@ def return_shop():
 
         time.sleep(2)
         os.system("cls")
-#This is the function that returns the player to lumbridge after the player has started the game
+#This is the function that is returned once the player starts a new game
 def return_lumbridge():
     print("Welcome to Lumbridge! You have just arrived of the boat from tutorial island. As soon as your boot reaches the earth below a man approches you.\n")
     time.sleep(2)
@@ -374,7 +374,7 @@ def return_lumbridge():
         return movement()
     elif quest_start == "no".lower():
         print("Oh. I see. Thats awkward. Ill see you later then. okay. bye. *cough*")
-        return main()
+        return main() #This returns the player to the main menu
     else:
         print("Are you okay? I dont understand what you are saying. Please try again.")
         return return_lumbridge()
@@ -411,7 +411,7 @@ def display_map():
             elif cell == 4:
                 print("?", end=" ") # Boss marker
             else:
-                print(".", end=" ") if cell == 0 else print("X", end=" ")  # 0 for empty, X for other objects
+                print(".", end=" ") if cell == 0 else print("X", end=" ")  # 0 for empty, ? for other objects
         print()
     print()
 
@@ -460,14 +460,14 @@ def movement():
             os.system("cls")
         else:
             print("Invalid input. Use 'W', 'A', 'S', 'D' to move.")
-            
+#This is the function that handles the player encounters with monsters
 def monster_enc():
     global player_position, player_1_monsters_killed, player_2_monsters_killed
     row, col = player_position
     current_cell = maps[current_map][row][col]
     
     if current_cell == 2:  # Monster marker
-        monster = random.choice(monsters)
+        monster = random.choice(monsters) #This randomises the monester that the player will encounter and displays the stats 
         print(f"A wild {monster['name']} appears! It has {monster['health']} health and {monster['attack']} attack.\n")
         
         if player_2:
@@ -478,16 +478,16 @@ def monster_enc():
         while monster["health"] > 0 and player["Health"] > 0:
             action = input("Do you want to (A)ttack (R)un (U)se item (C)ast magic? \n").lower()
             if action == "a":
-                damage = random.randint(5, 15)  
+                damage = random.randint(5, 15)  #This randomises the damage that the player will deal to the monster
                 monster["health"] -= damage
                 print(f"You dealt {damage} damage to the {monster['name']}. It has {monster['health']} health left.\n")
                 
                 if monster["health"] > 0:
-                    player["Health"] -= monster["attack"]
+                    player["Health"] -= monster["attack"] 
                     print(f"The {monster['name']} attacks you for {monster['attack']} damage. Your health is now {player['Health']}.\n")
                     
                     
-                    if player["Health"] <= 0:
+                    if player["Health"] <= 0: #This checks if the monster has died
                         print("You have been defeated by the monster!")
                         exit()
             elif action == "r":
@@ -509,53 +509,55 @@ def monster_enc():
         time.sleep(4)
         os.system("cls")
 
-    def monster_enc():
-        global player_position, player_1_monsters_killed, player_2_monsters_killed
-        row, col = player_position
-        current_cell = maps[current_map][row][col]
+#This is an initial test for combat
+    # def monster_enc():
+    #     global player_position, player_1_monsters_killed, player_2_monsters_killed
+    #     row, col = player_position
+    #     current_cell = maps[current_map][row][col]
         
-        if current_cell == 2:  # Monster marker
-            monster = random.choice(monsters)
-            print(f"A wild {monster['name']} appears! It has {monster['health']} health and {monster['attack']} attack.")
+    #     if current_cell == 2:  # Monster marker
+    #         monster = random.choice(monsters)
+    #         print(f"A wild {monster['name']} appears! It has {monster['health']} health and {monster['attack']} attack.")
             
-            if player_2:
-                player = player_2
-            else:
-                player = player_1
+    #         if player_2:
+    #             player = player_2
+    #         else:
+    #             player = player_1
             
-            while monster["health"] > 0 and player["Health"] > 0:
-                action = input("Do you want to (A)ttack, (R)un, (U)se item, or (C)ast magic? ").lower()
-                if action == "a":
-                    damage = random.randint(5, 15)  # Example player attack damage
-                    monster["health"] -= damage
-                    print(f"You dealt {damage} damage to the {monster['name']}. It has {monster['health']} health left.")
+    #         while monster["health"] > 0 and player["Health"] > 0:
+    #             action = input("Do you want to (A)ttack, (R)un, (U)se item, or (C)ast magic? ").lower()
+    #             if action == "a":
+    #                 damage = random.randint(5, 15)  # Example player attack damage
+    #                 monster["health"] -= damage
+    #                 print(f"You dealt {damage} damage to the {monster['name']}. It has {monster['health']} health left.")
                     
-                    if monster["health"] > 0:
-                        player["Health"] -= monster["attack"]
-                        print(f"The {monster['name']} attacks you for {monster['attack']} damage. Your health is now {player['Health']}.")
+    #                 if monster["health"] > 0:
+    #                     player["Health"] -= monster["attack"]
+    #                     print(f"The {monster['name']} attacks you for {monster['attack']} damage. Your health is now {player['Health']}.")
                         
-                        if player["Health"] <= 0:
-                            print("You have been defeated by the monster!")
-                            exit()
-                elif action == "r":
-                    print("You successfully ran away!")
-                    return movement()
-                elif action == "u":
-                    use_item(player)
-                elif action == "c":
-                    use_magic(player)
-                else:
-                    print("Invalid action. Please choose (A)ttack, (R)un, (U)se item, or (C)ast magic.")
+    #                     if player["Health"] <= 0:
+    #                         print("You have been defeated by the monster!")
+    #                         exit()
+    #             elif action == "r":
+    #                 print("You successfully ran away!")
+    #                 return movement()
+    #             elif action == "u":
+    #                 use_item(player)
+    #             elif action == "c":
+    #                 use_magic(player)
+    #             else:
+    #                 print("Invalid action. Please choose (A)ttack, (R)un, (U)se item, or (C)ast magic.")
             
-            if monster["health"] <= 0:
-                print(f"You have defeated the {monster['name']}!")
-                if player_2:
-                    player_2_monsters_killed += 1
-                else:
-                    player_1_monsters_killed += 1
-            time.sleep(4)
-            os.system("cls")
+    #         if monster["health"] <= 0:
+    #             print(f"You have defeated the {monster['name']}!")
+    #             if player_2:
+    #                 player_2_monsters_killed += 1
+    #             else:
+    #                 player_1_monsters_killed += 1
+    #         time.sleep(4)
+    #         os.system("cls")
 
+#This is the function that handles the player encounters with traps
 def trap_enc():
     global player_position, player_1_traps_triggered, player_2_traps_triggered
     row, col = player_position
@@ -573,12 +575,12 @@ def trap_enc():
             player = player_1
             player_1_traps_triggered += 1
         
-        player["Health"] -= damage
-        if player["Health"] <= 0:
+        player["Health"] -= damage # Player takes damage from the trap
+        if player["Health"] <= 0: # Checks if the player has died from the trap
             print("You have died from the trap!")
             exit()
         else:
-            print(f"Your current health is {player['Health']}.")
+            print(f"Your current health is {player['Health']}.") # Displays the players current health
         time.sleep(2)
         os.system("cls")
         
@@ -633,15 +635,15 @@ def boss_enc():
         time.sleep(4)
         os.system("cls")
 
-target = 5 
-def search_treasure(dungeon, target):
+target = 5  # Target value to search for in the dungeon
+def search_treasure(dungeon, target):  # Binary search algorithm to find the treasure in the dungeon
     for row in dungeon:
-        low, high = 0, len(row) - 1
+        low, high = 0, len(row) - 1 # Set low and high pointers
         while low <= high:
-            mid = (low + high) // 2
+            mid = (low + high) // 2 # Calculating mid point
             if row[mid] == target:
                 return True
-            elif row[mid] < target:
+            elif row[mid] < target: 
                 low = mid + 1
             else:
                 high = mid - 1
